@@ -1,0 +1,55 @@
+{
+  "name": "BasketCourts",
+  "description": "Find your next basketball court.",
+  "version": "0.1.0",
+  "author": [
+    {
+      "name": "Sébastien Chopin",
+      "email": "atinux@gmail.com",
+      "url": "https://twitter.com/atinux"
+    },
+    {
+      "name": "Alexandre Chopin",
+      "email": "wikeo65@gmail.com",
+      "url": "https://twitter.com/ChopinAlexandre"
+    }
+  ],
+  "engines": {
+    "node": "0.10.x"
+  },
+  "maintainers": [
+    "atinux",
+    "alexchopin"
+  ],
+  "keywords": [
+    "basketcourts"
+  ],
+  "dependencies": {
+    "async": "~0.2.10",
+    "colors": "~0.6.2",
+    "connect-multiparty": "~1.0.3",
+    "connect-redis": "~1.4.6",
+    "ejs": "~0.8.5",
+    "express": "~3.4.8",
+    "mailgun-js": "~0.3.2",
+    "moment": "~2.5.1",
+    "moment-timezone": "0.0.3",
+    "mongodb": "~1.3.23",
+    "numeral": "~1.5.3",
+    "raven": "~0.6.2",
+    "redis": "~0.10.0",
+    "request": "~2.33.0",
+    "underscore": "~1.6.0",
+    "underscore.string": "~2.3.3",
+    "schema-inspector": ">=1.4.0",
+    "socket.io": "~0.9.16"
+  },
+  "devDependencies": {
+    "mocha": ">=1.7.4",
+    "should": ">=1.2.1"
+  },
+  "scripts": {
+    "start": "app.js",
+    "test": "make test"
+  }
+}
