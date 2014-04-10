@@ -1,16 +1,18 @@
-Basket Courts
+Node Project
 ======
 
 Démarrage
 ---------
 
-- Lancez MongoDB (mongod)
-- Lancez Redis (redis-server)
+- Launch MongoDB (mongod)
+- Launch Redis (redis-server)
 - node app.js
 - http://localhost:2000/
 
-Mode production :
+Production mode :
 ```NODE_ENV=production node app.js```
+or
+```npm start```
 
-Jeux de test :
+Tests (mocha) :
 ```make test```
