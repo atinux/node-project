@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/atinux/node-project.png?label=ready&title=Ready)](https://waffle.io/atinux/node-project)
 Node Project
 ======
 
