@@ -1,5 +1,13 @@
 var express = require('express'),
-	RedisStore = require('connect-redis')(express);
+	compress = require('compression'),
+	session = require('express-session'),
+	CookieParser = require('cookie-parser'),
+	bodyParser = require('body-parser'),
+	serveStatic = require('serve-static'),
+	errorhandler = require('errorhandler'),
+	logger = require('morgan'),
+	vhost = require('vhost'),
+	RedisStore = require('connect-redis')(session);
 
 // Globals
 global.app = express();
@@ -13,36 +21,34 @@ var lib = require('./lib');
 // app.use(express.basicAuth('todori', 'anasnl65'));
 
 // Configuration
-app.configure(function () {
-	// Body parser and url parser
-	app.use(express.urlencoded());
-	app.use(express.json());
-	// For multiparty (upload files), we use connect-multiparty (see middleware in routes/api/index.js)
-	// Sessions with Redis
-	global.sessionStore = new RedisStore(_config.session.server);
-	global.cookieParser = express.cookieParser(_config.session.secret);
-	app.use(cookieParser);
-	app.use(express.session({
-		store: sessionStore,
-		key: _config.session.key
-	}));
-	// Templating
-	app.set('view engine', 'ejs');
-	app.set('views', __dirname + '/views');
-	// Static folder
-	app.use(express.static(__dirname + '/public'));
-	// Compress response data with gzip / deflate
-	app.use(express.compress());
-});
+app.use(logger({
+	format: (_PRODUCTION_ ? 'default' : 'dev'),
+	skip: function (req, res){ return res.statusCode === 304; }
+}));
+app.use(bodyParser());
+// For multiparty (upload files), we use connect-multiparty (see middleware in routes/api/index.js)
+// Sessions with Redis
+global.sessionStore = new RedisStore(_config.session.server);
+global.cookieParser = CookieParser(_config.session.secret);
+app.use(cookieParser);
+app.use(session({
+	store: sessionStore,
+	key: _config.session.key
+}));
+// Templating
+app.set('view engine', 'ejs');
+app.set('views', __dirname + '/views');
+// Static folder
+app.use(serveStatic(__dirname + '/public'));
+// Compress response data with gzip / deflate
+app.use(compress());
 
 // Development configuration
-app.configure('development', function(){
-	app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); // throw error on development
-});
-
+if (!_PRODUCTION_) {
+	app.use(errorhandler({ dumpExceptions: true, showStack: true })); // throw error on development
+}
 // Production configuration
-app.configure('production', function() {
-	app.use(express.errorHandler()); // Don't throw error (don't kill app in production)
+if (_PRODUCTION_) {
 	// Redirect all on host
 	app.use(function (req, res, next) {
 		if (req.header('host') !== _config.host || req.protocol !== _config.protocol)
@@ -50,10 +56,7 @@ app.configure('production', function() {
 		next();
 	});
 	_INFO_ = false;
-});
-
-// Use defined routes after static files and middlewares
-app.use(app.router);
+}
 
 // Routes
 require('./routes');
