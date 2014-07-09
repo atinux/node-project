@@ -1,7 +1,6 @@
 var express = require('express'),
 	compress = require('compression'),
 	session = require('express-session'),
-	CookieParser = require('cookie-parser'),
 	bodyParser = require('body-parser'),
 	serveStatic = require('serve-static'),
 	errorhandler = require('errorhandler'),
@@ -43,15 +42,17 @@ app.use(bodyParser.json()); // parse application/json
 
 // Sessions with Redis
 global.sessionStore = new RedisStore(_config.session.server);
-global.cookieParser = CookieParser(_config.session.secret);
-app.use(cookieParser);
 app.use(session({
-	resave: false, // Don't save session if unmodified
-	saveUninitialized: false, // Don't create session until something stored
+	name: _config.session.key,
+	resave: true, // Don't save session if unmodified
+	saveUninitialized: true, // Create session each time
 	store: sessionStore,
-	key: _config.session.key,
-	secret: _config.session.secret
+	secret: _config.session.secret,
+	cookie: {
+		secure: (_config.protocol === 'https' ? true : false)
+	}
 }));
+
 // Templating
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
@@ -89,5 +90,5 @@ lib.init(function (err) {
 	console.log((_config.name + ' is working on port ' + _config.port).green);
 
 	// Socket.io
-	// require('./lib/sockets');
+	require('./lib/sockets');
 });

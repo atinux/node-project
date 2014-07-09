@@ -1,9 +1,9 @@
 exports.ok = function (req, res) {
-	res.send({ connected: true });
+	res.send(null, { connected: true });
 };
 
 exports.sockets = function (req, res) {
-	res.send(io.getUserSocketIds(req.session.userId));
+	res.send(null, io.getUserSockets(req.session.userId));
 };
 
 exports.login = function (req, res) {

@@ -12,6 +12,7 @@ var config = {
 
 if (_PRODUCTION_) {
 	config.port = 80;
+	// config.protocol = 'https';
 }
 
 config.port = Number(process.env.PORT || config.port);

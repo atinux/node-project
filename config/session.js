@@ -7,8 +7,8 @@ var server = {
 	// pass: 'password'
 };
 
-exports.secret = 'boilerplate-(9:)&*(&*TIH%)*&(*TGYI@HOIj74z7Z3jV!gmp5p*@#^Gball';
-exports.key = 'boilerplate-session';
+exports.secret = 'node-project-(9:)&*(&*TIH%)*&(*T0989yuih74z7Z3jV!gmp5p*@#^Gball';
+exports.key = 'node-project-session';
 
 if (_PRODUCTION_) {
 	server.host = 'localhost';
