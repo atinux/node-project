@@ -3,8 +3,8 @@
 */
 
 var config = {
-	name: 'Basket Courts',
-	host: 'www.basketcourts.com',
+	name: 'Node Project',
+	host: 'www.your-url.com',
 	protocol: 'http',
 	lang: 'fr', // Used for moment() and numeral()
 	port: 2000

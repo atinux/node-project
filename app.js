@@ -7,6 +7,7 @@ var express = require('express'),
 	errorhandler = require('errorhandler'),
 	logger = require('morgan'),
 	vhost = require('vhost'),
+	auth = require('basic-auth'),
 	RedisStore = require('connect-redis')(session);
 
 // Globals
@@ -18,22 +19,38 @@ global._PRODUCTION_ = (process.env.NODE_ENV === 'production');
 // Include lib (add `execute` to globals)
 var lib = require('./lib');
 
-// app.use(express.basicAuth('todori', 'anasnl65'));
+// Basic auth
+if (_config.basicAuth.active) {
+	app.use(function (req, res, next) {
+		var user = auth(req);
+		if (user && user.name === _config.basicAuth.username && user.pass === _config.basicAuth.password)
+			return next();
+		res.setHeader('WWW-Authenticate', 'Basic realm="'+_config.basicAuth.realm+'"');
+		res.send(401, 'Unauthorized');
+	});
+}
 
 // Configuration
 app.use(logger({
 	format: (_PRODUCTION_ ? 'default' : 'dev'),
 	skip: function (req, res){ return res.statusCode === 304; }
 }));
-app.use(bodyParser());
+
+// Body parser
+app.use(bodyParser.urlencoded({ extended: true })); // parse application/x-www-form-urlencoded
+app.use(bodyParser.json()); // parse application/json
 // For multiparty (upload files), we use connect-multiparty (see middleware in routes/api/index.js)
+
 // Sessions with Redis
 global.sessionStore = new RedisStore(_config.session.server);
 global.cookieParser = CookieParser(_config.session.secret);
 app.use(cookieParser);
 app.use(session({
+	resave: false, // Don't save session if unmodified
+	saveUninitialized: false, // Don't create session until something stored
 	store: sessionStore,
-	key: _config.session.key
+	key: _config.session.key,
+	secret: _config.session.secret
 }));
 // Templating
 app.set('view engine', 'ejs');
@@ -72,5 +89,5 @@ lib.init(function (err) {
 	console.log((_config.name + ' is working on port ' + _config.port).green);
 
 	// Socket.io
-	require('./lib/sockets');
+	// require('./lib/sockets');
 });

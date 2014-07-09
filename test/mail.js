@@ -1,4 +1,4 @@
-var api_key = 'key-2j4rkrxco1t2zqqhdzrovl2zmlhpk1b4';
+var api_key = '';
 var domain = 'basketcourts.com';
 var mailgun = require('mailgun-js')(api_key, domain);
 
